@@ -1,7 +1,7 @@
-import TodoApp from '@/components/TodoApp';
+import GymManager from '@/components/TodoApp';
 
 const Index = () => {
-  return <TodoApp />;
+  return <GymManager />;
 };
 
 export default Index;
