@@ -23,14 +23,14 @@ export default function Navbar({ currentView, onViewChange }: NavbarProps) {
   ]
 
   const NavContent = () => (
-    <div className="flex flex-col gap-4">
+    <>
       {navItems.map((item) => {
         const Icon = item.icon
         return (
           <Button
             key={item.id}
             variant={currentView === item.id ? 'default' : 'ghost'}
-            className="w-full justify-start gap-2"
+            className="w-full md:w-auto justify-start md:justify-center gap-2"
             onClick={() => {
               onViewChange(item.id)
               setIsOpen(false)
@@ -43,32 +43,38 @@ export default function Navbar({ currentView, onViewChange }: NavbarProps) {
       })}
       <Button
         variant="ghost"
-        className="w-full justify-start gap-2 text-destructive hover:text-destructive"
+        className="w-full md:w-auto justify-start md:justify-center gap-2 text-destructive hover:text-destructive"
         onClick={handleLogout}
       >
         <LogOut className="h-4 w-4" />
         Logout
       </Button>
-    </div>
+    </>
   )
 
   return (
     <header className="border-b bg-card">
-      <div className="flex h-16 items-center px-4 lg:px-6">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto w-full">
+        
+        {/* Logo */}
         <div className="flex items-center gap-2">
           <Dumbbell className="h-6 w-6 text-primary" />
           <span className="font-bold text-lg">Gym Manager</span>
         </div>
-        
+
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex ml-auto gap-2">
+        <nav className="hidden md:flex items-center gap-2">
           <NavContent />
         </nav>
-        
+
         {/* Mobile Navigation */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden ml-auto">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden ml-auto"
+            >
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
@@ -77,7 +83,9 @@ export default function Navbar({ currentView, onViewChange }: NavbarProps) {
               <Dumbbell className="h-6 w-6 text-primary" />
               <span className="font-bold text-lg">Gym Manager</span>
             </div>
-            <NavContent />
+            <div className="flex flex-col gap-4">
+              <NavContent />
+            </div>
           </SheetContent>
         </Sheet>
       </div>

@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = 'YOUR_SUPABASE_URL'
-const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY'
+// GymManagementSystem123
+const supabaseUrl = 'https://joetmuzyethkpchyqfgq.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvZXRtdXp5ZXRoa3BjaHlxZmdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5NzkwNjcsImV4cCI6MjA3MDU1NTA2N30.xspLW-K6R8bqEhJ0IaUAls6v9cV8Dys8YdxPPVE0J24'
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 

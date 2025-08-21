@@ -18,7 +18,7 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
   const [formData, setFormData] = useState({
     member_id: '',
     amount: '',
-    due_date: new Date().toISOString().split('T')[0],
+    due_date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
     status: 'pending' as 'paid' | 'pending' | 'overdue',
   })
   const [loading, setLoading] = useState(false)
@@ -43,19 +43,19 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
   }
 
   const calculateNextDueDate = (member: Member) => {
-    const today = new Date()
+    const nextDate = new Date()
     switch (member.plan_type) {
       case 'Monthly':
-        today.setMonth(today.getMonth() + 1)
+        nextDate.setMonth(nextDate.getMonth() + 1)
         break
       case 'Quarterly':
-        today.setMonth(today.getMonth() + 3)
+        nextDate.setMonth(nextDate.getMonth() + 3)
         break
       case 'Yearly':
-        today.setFullYear(today.getFullYear() + 1)
+        nextDate.setFullYear(nextDate.getFullYear() + 1)
         break
     }
-    return today.toISOString().split('T')[0]
+    return nextDate.toISOString().split('T')[0]
   }
 
   const handleMemberSelect = (memberId: string) => {
@@ -74,9 +74,12 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
     setLoading(true)
 
     try {
+      // Clean & prepare data for Supabase
       const paymentData = {
-        ...formData,
+        member_id: formData.member_id,
         amount: parseFloat(formData.amount),
+        due_date: formData.due_date, // YYYY-MM-DD
+        status: formData.status,
         payment_date: formData.status === 'paid' ? new Date().toISOString() : null,
       }
 
@@ -92,11 +95,12 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
       })
 
       onSuccess()
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Payment insert error:', error)
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to record payment',
+        description: error.message || 'Failed to record payment',
       })
     } finally {
       setLoading(false)
@@ -127,7 +131,7 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="member_id">Select Member *</Label>
+              <Label>Select Member *</Label>
               <Select
                 value={formData.member_id}
                 onValueChange={handleMemberSelect}
@@ -159,9 +163,8 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="amount">Amount ($) *</Label>
+                <Label>Amount ($) *</Label>
                 <Input
-                  id="amount"
                   type="number"
                   step="0.01"
                   min="0"
@@ -172,9 +175,8 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="due_date">Due Date *</Label>
+                <Label>Due Date *</Label>
                 <Input
-                  id="due_date"
                   type="date"
                   value={formData.due_date}
                   onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
@@ -184,7 +186,7 @@ export default function PaymentForm({ onClose, onSuccess }: PaymentFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">Payment Status *</Label>
+              <Label>Payment Status *</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, status: value as 'paid' | 'pending' | 'overdue' }))}
